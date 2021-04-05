@@ -1,16 +1,5 @@
 <template>
   <v-app>
-    <!-- <v-app-bar
-      app
-      color="primary"
-      dark
-    >
-      <div class="text-h4 d-flex align-self-center">
-        Typer
-      </div>
-
-    </v-app-bar> -->
-
     <v-main>
       <div class='typer d-flex flex-column align-center'>
         <div class="typer__title text-h1 animate__animated animate__fadeInLeftBig">
@@ -19,19 +8,23 @@
         <div class="typer__subtitle text-h2 animate__animated animate__fadeInRightBig animate__delay-1s">
           Show your speed!
         </div>
-        <div class="typer__text">
-          {{en.text}}
-        </div>
+        <div class="typer__text animate__animated animate__fadeIn animate__delay-2s animate__slow"><span>{{nextLetter}}</span>{{restText}}</div>
+        <v-progress-linear
+          class=''
+          v-model='progress'
+          color="amber"
+          height="25"
+        ></v-progress-linear>
         <hr>
         <div class="typer__keyboard animate__animated animate__fadeIn animate__delay-2s animate__slow">
           <div class="">
-            <Key ref='keys' @change-text='changeText' :nextLetter='nextLetter' v-for='(key, i) in firstLineKeys' :key='i' :somekey='key'/>
+            <Key ref='keys' :uppercase='uppercase' v-for='(key, i) in firstLineKeys' :key='i' :somekey='key'/>
           </div>
           <div class="">
-            <Key ref='keys' @change-text='changeText' :nextLetter='nextLetter' v-for='(key, i) in secondLineKeys' :key='i' :somekey='key'/>
+            <Key ref='keys' :uppercase='uppercase' v-for='(key, i) in secondLineKeys' :key='12 + i' :somekey='key'/>
           </div>
           <div class="">
-            <Key ref='keys' @change-text='changeText' :nextLetter='nextLetter' v-for='(key, i) in thirdLineKeys' :key='i' :somekey='key'/>
+            <Key ref='keys' :uppercase='uppercase' v-for='(key, i) in thirdLineKeys' :key='23 + i' :somekey='key'/>
           </div>
         </div>
       </div>
@@ -49,60 +42,82 @@ export default {
     Key
   },
   data: () => ({
+    uppercase: false,
     en: {
       text: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
       keys: [
-        { keyText: 'q', code: 'KeyQ' },
-        { keyText: 'w', code: 'KeyW' },
-        { keyText: 'e', code: 'KeyE' },
-        { keyText: 'r', code: 'KeyR' },
-        { keyText: 't', code: 'KeyT' },
-        { keyText: 'y', code: 'KeyY' },
-        { keyText: 'u', code: 'KeyU' },
-        { keyText: 'i', code: 'KeyI' },
-        { keyText: 'o', code: 'KeyO' },
-        { keyText: 'p', code: 'KeyP' },
-        { keyText: '[', code: 'BracketLeft' },
-        { keyText: ']', code: 'BracketRight' },
-        { keyText: 'a', code: 'KeyA' },
-        { keyText: 's', code: 'KeyS' },
-        { keyText: 'd', code: 'KeyD' },
-        { keyText: 'f', code: 'KeyF' },
-        { keyText: 'g', code: 'KeyG' },
-        { keyText: 'h', code: 'KeyH' },
-        { keyText: 'j', code: 'KeyJ' },
-        { keyText: 'k', code: 'KeyK' },
-        { keyText: 'l', code: 'KeyL' },
-        { keyText: ';', code: 'Semicolon' },
-        { keyText: "'", code: 'Quote' },
-        { keyText: 'z', code: 'KeyA' },
-        { keyText: 'x', code: 'KeyS' },
-        { keyText: 'c', code: 'KeyD' },
-        { keyText: 'v', code: 'KeyF' },
-        { keyText: 'b', code: 'KeyG' },
-        { keyText: 'n', code: 'KeyH' },
-        { keyText: 'm', code: 'KeyJ' },
-        { keyText: ',', code: 'KeyK' },
-        { keyText: '.', code: 'KeyL' },
-        { keyText: '/', code: 'Semicolon' },
+        { lowText: 'q', upText: 'Q'},
+        { lowText: 'w', upText: 'W'},
+        { lowText: 'e', upText: 'E'},
+        { lowText: 'r', upText: 'R'},
+        { lowText: 't', upText: 'T'},
+        { lowText: 'y', upText: 'Y'},
+        { lowText: 'u', upText: 'U'},
+        { lowText: 'i', upText: 'I'},
+        { lowText: 'o', upText: 'O'},
+        { lowText: 'p', upText: 'P'},
+        { lowText: '[', upText: '{'},
+        { lowText: ']', upText: '}'},
+        { lowText: 'a', upText: 'A'},
+        { lowText: 's', upText: 'S'},
+        { lowText: 'd', upText: 'D'},
+        { lowText: 'f', upText: 'F'},
+        { lowText: 'g', upText: 'G'},
+        { lowText: 'h', upText: 'H'},
+        { lowText: 'j', upText: 'J'},
+        { lowText: 'k', upText: 'K'},
+        { lowText: 'l', upText: 'L'},
+        { lowText: ';', upText: ':'},
+        { lowText: "'", upText: '"'},
+        { lowText: 'z', upText: 'Z'},
+        { lowText: 'x', upText: 'X'},
+        { lowText: 'c', upText: 'C'},
+        { lowText: 'v', upText: 'V'},
+        { lowText: 'b', upText: 'B'},
+        { lowText: 'n', upText: 'N'},
+        { lowText: 'm', upText: 'M'},
+        { lowText: ',', upText: '<'},
+        { lowText: '.', upText: '>'},
+        { lowText: '/', upText: '?'},
+        { lowText: ' ', upText: ' ', space: true}
       ]
     }
   }),
   mounted() {
-    document.addEventListener('keydown', this.keyPressed);
+    document.addEventListener('keydown', this.pressedKey);
   },
   methods: {
-    keyPressed(e) {
+    pressedKey(e) {
+      console.log(this.en.text.length);
+      if (e.key === 'Shift' && e.repeat === false) {
+        this.uppercase = !this.uppercase;
+        document.addEventListener('keyup', this.changeCase);
+      }
+      if (e.key === 'CapsLock') {
+        this.uppercase = !this.uppercase;
+      }
       for (let i = 0; i < this.en.keys.length; i++) {
-        if(this.$refs.keys[i].somekey.keyText === e.key) {
-          this.$refs.keys[i].keyPressed(e);
+        if(this.$refs.keys[i].somekey.lowText === e.key.toLowerCase()) {
+          if(e.key === this.nextLetter) {
+            this.$refs.keys[i].$el.classList.add('key_correct');
+            setTimeout(() => this.$refs.keys[i].$el.classList.remove('key_correct'), 100);
+            this.changeText();
+          } else {
+            this.$refs.keys[i].$el.classList.add('key_wrong');
+            setTimeout(() => this.$refs.keys[i].$el.classList.remove('key_wrong'), 100);
+          }
           return;
         }
       }
     },
     changeText() {
-      console.log('used');
       this.en.text = this.en.text.slice(1);
+    },
+    changeCase(e) {
+      if (e.key === 'Shift') {
+        this.uppercase = !this.uppercase;
+        document.removeEventListener('keyup', this.changeCase);
+      }
     }
   },
   computed: {
@@ -113,10 +128,16 @@ export default {
       return this.en.keys.slice(12, 23);
     },
     thirdLineKeys() {
-      return this.en.keys.slice(23, 33);
+      return this.en.keys.slice(23, 34);
     },
     nextLetter() {
       return this.en.text.slice(0, 1);
+    },
+    restText() {
+      return this.en.text.slice(1);
+    },
+    progress() {
+      return 20;
     }
   }
 };
@@ -133,10 +154,14 @@ export default {
       margin-bottom: 50px;
     }
     &__text {
-      font-size: 25px;
-      width: 60%;
-      &:first-letter {
-        background: #C5CAE9;
+      font-size: 27px;
+      width: 75%;
+      min-height: 300px;
+      white-space: pre-wrap;
+      position: relative;
+      & span {
+        color: #fff;
+        background: grey;
       }
     }
     & hr {
@@ -146,17 +171,20 @@ export default {
     &__keyboard {
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      width: 700px;
       padding: 15px;
       border-radius: 10px;
+      background: #E8EAF6;
       border: 3px solid #000;
-      width: 750px;
-      height: 300px;
       font-weight: bold;
       font-size: 23px;
       & > div {
         display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        &:not(:last-child) {
+          margin-bottom: 5px;
+        }
         & > div {
           &:not(:last-child) {
             margin-right: 5px;
