@@ -8,14 +8,19 @@
         <div class="typer__subtitle text-h2 animate__animated animate__fadeInRightBig animate__delay-1s">
           Show your speed!
         </div>
-        <div class="typer__text animate__animated animate__fadeIn animate__delay-2s animate__slow"><span>{{nextLetter}}</span>{{restText}}</div>
+        <div class="typer__text animate__animated animate__fadeIn animate__delay-2s animate__slow">
+          <span>{{nextLetter}}</span>{{restText}}
+          <div v-if='progress === 100' class="text-h1">
+            Mistakes: {{this.trainInfo.mistakes}}
+          </div>
+        </div>
         <div class='typer__progress'>
           <v-progress-linear
             v-model='progress'
             color="blue-grey"
             height="25"
           >
-            <!-- <strong>{{ progress }}%</strong> -->
+            <strong>{{ progress }}%</strong>
           </v-progress-linear>
 
         </div>
@@ -47,6 +52,9 @@ export default {
   },
   data: () => ({
     uppercase: false,
+    trainInfo: {
+      mistakes: 0
+    },
     en: {
       stableText: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
       text: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
@@ -109,6 +117,7 @@ export default {
           } else {
             this.$refs.keys[i].$el.classList.add('key_wrong');
             setTimeout(() => this.$refs.keys[i].$el.classList.remove('key_wrong'), 100);
+            this.trainInfo.mistakes++;
           }
           return;
         }
@@ -141,8 +150,14 @@ export default {
       return this.en.text.slice(1);
     },
     progress() {
-      const PERCENT = Math.floor(this.en.stableText.length / 100);
-      return Math.floor(((this.en.stableText.length - this.en.text.length) / PERCENT));
+      const PERCENT = this.en.stableText.length / 100;
+      let x = 0;
+      if(this.en.text.length) {
+        x = Math.floor(((this.en.stableText.length - this.en.text.length) / PERCENT));
+      } else {
+        x = 100;
+      }
+      return x;
     }
   }
 };
