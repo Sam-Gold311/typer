@@ -9,12 +9,16 @@
           Show your speed!
         </div>
         <div class="typer__text animate__animated animate__fadeIn animate__delay-2s animate__slow"><span>{{nextLetter}}</span>{{restText}}</div>
-        <v-progress-linear
-          class=''
-          v-model='progress'
-          color="amber"
-          height="25"
-        ></v-progress-linear>
+        <div class='typer__progress'>
+          <v-progress-linear
+            v-model='progress'
+            color="blue-grey"
+            height="25"
+          >
+            <!-- <strong>{{ progress }}%</strong> -->
+          </v-progress-linear>
+
+        </div>
         <hr>
         <div class="typer__keyboard animate__animated animate__fadeIn animate__delay-2s animate__slow">
           <div class="">
@@ -44,6 +48,7 @@ export default {
   data: () => ({
     uppercase: false,
     en: {
+      stableText: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
       text: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
       keys: [
         { lowText: 'q', upText: 'Q'},
@@ -88,7 +93,6 @@ export default {
   },
   methods: {
     pressedKey(e) {
-      console.log(this.en.text.length);
       if (e.key === 'Shift' && e.repeat === false) {
         this.uppercase = !this.uppercase;
         document.addEventListener('keyup', this.changeCase);
@@ -137,7 +141,8 @@ export default {
       return this.en.text.slice(1);
     },
     progress() {
-      return 20;
+      const PERCENT = Math.floor(this.en.stableText.length / 100);
+      return Math.floor(((this.en.stableText.length - this.en.text.length) / PERCENT));
     }
   }
 };
@@ -163,6 +168,9 @@ export default {
         color: #fff;
         background: grey;
       }
+    }
+    &__progress {
+      width: 75%;
     }
     & hr {
       margin: 50px 0;
