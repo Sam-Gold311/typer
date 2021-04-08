@@ -10,8 +10,9 @@
         </div>
         <div class="typer__text animate__animated animate__fadeIn animate__delay-2s animate__slow">
           <span>{{nextLetter}}</span>{{restText}}
-          <div v-if='progress === 100' class="text-h1">
-            Mistakes: {{this.trainInfo.mistakes}}
+          <div v-if='progress === 100' class="text-h3">
+            <span>Mistakes: {{this.trainInfo.mistakes}}</span>
+            <span>Speed: {{}}</span>
           </div>
         </div>
         <div class='typer__progress'>
@@ -20,20 +21,46 @@
             color="blue-grey"
             height="25"
           >
-            <strong>{{ progress }}%</strong>
+            <!-- <strong>{{ progress }}%</strong> -->
           </v-progress-linear>
 
         </div>
         <hr>
-        <div class="typer__keyboard animate__animated animate__fadeIn animate__delay-2s animate__slow">
-          <div class="">
-            <Key ref='keys' :uppercase='uppercase' v-for='(key, i) in firstLineKeys' :key='i' :somekey='key'/>
+        <div class="typer__controls">
+          <div class="typer__keyboard animate__animated animate__fadeIn animate__delay-2s animate__slow">
+            <div class="">
+              <Key ref='keys' :uppercase='uppercase' v-for='(key, i) in firstLineKeys' :key='i' :somekey='key'/>
+            </div>
+            <div class="">
+              <Key ref='keys' :uppercase='uppercase' v-for='(key, i) in secondLineKeys' :key='12 + i' :somekey='key'/>
+            </div>
+            <div class="">
+              <Key ref='keys' :uppercase='uppercase' v-for='(key, i) in thirdLineKeys' :key='23 + i' :somekey='key'/>
+            </div>
           </div>
-          <div class="">
-            <Key ref='keys' :uppercase='uppercase' v-for='(key, i) in secondLineKeys' :key='12 + i' :somekey='key'/>
-          </div>
-          <div class="">
-            <Key ref='keys' :uppercase='uppercase' v-for='(key, i) in thirdLineKeys' :key='23 + i' :somekey='key'/>
+          <div class="typer__buttons">
+            <v-btn
+              elevation="2"
+              x-large
+              :disabled='!this.buttons.start'
+            >
+              Start
+            </v-btn>
+            <v-btn
+              elevation="2"
+              x-large
+              :disabled='!this.buttons.restart'
+            >
+              Restart
+            </v-btn>
+            <v-btn
+              elevation="2"
+              x-large
+              color='error'
+              :disabled='!this.buttons.stop'
+            >
+              Stop
+            </v-btn>
           </div>
         </div>
       </div>
@@ -52,6 +79,12 @@ export default {
   },
   data: () => ({
     uppercase: false,
+    keyboard: false,
+    buttons: {
+      start: true,
+      restart: false,
+      stop: false
+    },
     trainInfo: {
       mistakes: 0
     },
@@ -96,10 +129,13 @@ export default {
       ]
     }
   }),
-  mounted() {
-    document.addEventListener('keydown', this.pressedKey);
-  },
   methods: {
+    startTrain() {
+      document.addEventListener('keydown', this.pressedKey);
+    },
+    endTrain() {
+      document.removeEventListener('keydown', this.pressedKey);
+    },
     pressedKey(e) {
       if (e.key === 'Shift' && e.repeat === false) {
         this.uppercase = !this.uppercase;
@@ -151,13 +187,11 @@ export default {
     },
     progress() {
       const PERCENT = this.en.stableText.length / 100;
-      let x = 0;
       if(this.en.text.length) {
-        x = Math.floor(((this.en.stableText.length - this.en.text.length) / PERCENT));
+        return Math.floor(((this.en.stableText.length - this.en.text.length) / PERCENT));
       } else {
-        x = 100;
+        return 100;
       }
-      return x;
     }
   }
 };
@@ -188,12 +222,21 @@ export default {
       width: 75%;
     }
     & hr {
-      margin: 50px 0;
+      margin: 40px 0;
       width: 100%;
     }
-    &__keyboard {
+    &__controls {
+      width: 75%;
+      justify-content: center;
+      display: flex;
+    }
+    &__buttons {
       display: flex;
       flex-direction: column;
+      justify-content: space-around;
+    }
+    &__keyboard {
+      margin-right: 40px;
       width: 700px;
       padding: 15px;
       border-radius: 10px;
