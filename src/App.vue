@@ -17,6 +17,7 @@
         </div>
         <div class='typer__progress'>
           <v-progress-linear
+            class='animate__animated animate__fadeIn animate__delay-2s animate__slow'
             v-model='progress'
             color="blue-grey"
             height="25"
@@ -27,7 +28,7 @@
         </div>
         <hr>
         <div class="typer__controls">
-          <div class="typer__keyboard animate__animated animate__fadeIn animate__delay-2s animate__slow">
+          <div class="typer__keyboard animate__animated animate__faster">
             <div class="">
               <Key ref='keys' :uppercase='uppercase' v-for='(key, i) in firstLineKeys' :key='i' :somekey='key'/>
             </div>
@@ -38,8 +39,9 @@
               <Key ref='keys' :uppercase='uppercase' v-for='(key, i) in thirdLineKeys' :key='23 + i' :somekey='key'/>
             </div>
           </div>
-          <div class="typer__buttons">
+          <div class="typer__buttons animate__animated animate__fadeIn animate__delay-2s animate__slow">
             <v-btn
+              @click='startTrain'
               elevation="2"
               x-large
               :disabled='!this.buttons.start'
@@ -47,6 +49,7 @@
               Start
             </v-btn>
             <v-btn
+              @click='restartTrain'
               elevation="2"
               x-large
               :disabled='!this.buttons.restart'
@@ -54,6 +57,7 @@
               Restart
             </v-btn>
             <v-btn
+              @click='stopTrain'
               elevation="2"
               x-large
               color='error'
@@ -85,6 +89,7 @@ export default {
       restart: false,
       stop: false
     },
+    timer: 0,
     trainInfo: {
       mistakes: 0
     },
@@ -132,9 +137,23 @@ export default {
   methods: {
     startTrain() {
       document.addEventListener('keydown', this.pressedKey);
+      this.buttons.start = !this.buttons.start;
+      this.buttons.restart = !this.buttons.restart;
+      this.buttons.stop = !this.buttons.stop;
+      this.$el.getElementsByClassName('typer__keyboard')[0].classList.remove('animate__fadeOutLeft');
+      this.$el.getElementsByClassName('typer__keyboard')[0].classList.add('animate__fadeInLeft');
     },
-    endTrain() {
+    restartTrain() {
+      this.en.text = this.en.stableText;
+    },
+    stopTrain() {
       document.removeEventListener('keydown', this.pressedKey);
+      this.buttons.start = !this.buttons.start;
+      this.buttons.restart = !this.buttons.restart;
+      this.buttons.stop = !this.buttons.stop;
+      this.en.text = this.en.stableText;
+      this.$el.getElementsByClassName('typer__keyboard')[0].classList.remove('animate__fadeInLeft');
+      this.$el.getElementsByClassName('typer__keyboard')[0].classList.add('animate__fadeOutLeft');
     },
     pressedKey(e) {
       if (e.key === 'Shift' && e.repeat === false) {
@@ -236,6 +255,7 @@ export default {
       justify-content: space-around;
     }
     &__keyboard {
+      opacity: 0;
       margin-right: 40px;
       width: 700px;
       padding: 15px;
