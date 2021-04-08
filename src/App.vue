@@ -39,32 +39,37 @@
               <Key ref='keys' :uppercase='uppercase' v-for='(key, i) in thirdLineKeys' :key='23 + i' :somekey='key'/>
             </div>
           </div>
-          <div class="typer__buttons animate__animated animate__fadeIn animate__delay-2s animate__slow">
-            <v-btn
-              @click='startTrain'
-              elevation="2"
-              x-large
-              :disabled='!this.buttons.start'
-            >
-              Start
-            </v-btn>
-            <v-btn
-              @click='restartTrain'
-              elevation="2"
-              x-large
-              :disabled='!this.buttons.restart'
-            >
-              Restart
-            </v-btn>
-            <v-btn
-              @click='stopTrain'
-              elevation="2"
-              x-large
-              color='error'
-              :disabled='!this.buttons.stop'
-            >
-              Stop
-            </v-btn>
+          <div class="d-flex flex-column justify-space-between">
+            <div class="typer__buttons animate__animated animate__fadeIn animate__delay-2s animate__slow">
+              <v-btn
+                @click='startTrain'
+                large
+                elevation="2"
+                :disabled='!this.buttons.start'
+              >
+                Start
+              </v-btn>
+              <v-btn
+                @click='restartTrain'
+                large
+                elevation="2"
+                :disabled='!this.buttons.restart'
+              >
+                Restart
+              </v-btn>
+              <v-btn
+                @click='stopTrain'
+                large
+                elevation="2"
+                color='error'
+                :disabled='!this.buttons.stop'
+              >
+                Stop
+              </v-btn>
+            </div>
+            <div class="typer__timer">
+              Time:<br>{{timer}}
+            </div>
           </div>
         </div>
       </div>
@@ -142,6 +147,7 @@ export default {
       this.buttons.stop = !this.buttons.stop;
       this.$el.getElementsByClassName('typer__keyboard')[0].classList.remove('animate__fadeOutLeft');
       this.$el.getElementsByClassName('typer__keyboard')[0].classList.add('animate__fadeInLeft');
+      this.timerOn();
     },
     restartTrain() {
       this.en.text = this.en.stableText;
@@ -154,6 +160,13 @@ export default {
       this.en.text = this.en.stableText;
       this.$el.getElementsByClassName('typer__keyboard')[0].classList.remove('animate__fadeInLeft');
       this.$el.getElementsByClassName('typer__keyboard')[0].classList.add('animate__fadeOutLeft');
+      this.timerOff();
+    },
+    timerOn() {
+      setInterval(() => this.timer++, 1000);
+    },
+    timerOff() {
+      clearInterval(this.timerOn());
     },
     pressedKey(e) {
       if (e.key === 'Shift' && e.repeat === false) {
@@ -228,7 +241,7 @@ export default {
     }
     &__text {
       font-size: 27px;
-      width: 75%;
+      width: 80%;
       min-height: 300px;
       white-space: pre-wrap;
       position: relative;
@@ -238,25 +251,26 @@ export default {
       }
     }
     &__progress {
-      width: 75%;
+      width: 80%;
     }
     & hr {
       margin: 40px 0;
       width: 100%;
     }
     &__controls {
-      width: 75%;
-      justify-content: center;
+      width: 80%;
+      flex-wrap: wrap;
+      justify-content: space-around;
       display: flex;
     }
     &__buttons {
       display: flex;
-      flex-direction: column;
-      justify-content: space-around;
+      & button:not(:last-child) {
+        margin-right: 20px;
+      }
     }
     &__keyboard {
       opacity: 0;
-      margin-right: 40px;
       width: 700px;
       padding: 15px;
       border-radius: 10px;
@@ -277,6 +291,11 @@ export default {
           }
         }
       }
+    }
+    &__timer {
+      align-self: center;
+      text-align: center;
+      font-size: 45px;
     }
   }
 </style>
