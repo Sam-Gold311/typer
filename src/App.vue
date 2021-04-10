@@ -10,9 +10,9 @@
         </div>
         <div class="typer__text animate__animated animate__fadeIn animate__delay-2s animate__slow">
           <span>{{nextLetter}}</span>{{restText}}
-          <div v-if='progress === 100' class="text-h3">
+          <div v-if='progress === 100' class="text-h3 d-flex flex-column">
             <span>Mistakes: {{this.trainInfo.mistakes}}</span>
-            <span>Speed: {{}}</span>
+            <span>Speed: {{this.speed}} CPM</span>
           </div>
         </div>
         <div class='typer__progress'>
@@ -95,6 +95,7 @@ export default {
       stop: false
     },
     timer: 0,
+    timerInterval: null,
     trainInfo: {
       mistakes: 0
     },
@@ -147,9 +148,14 @@ export default {
       this.buttons.stop = !this.buttons.stop;
       this.$el.getElementsByClassName('typer__keyboard')[0].classList.remove('animate__fadeOutLeft');
       this.$el.getElementsByClassName('typer__keyboard')[0].classList.add('animate__fadeInLeft');
-      this.timerOn();
+      this.timer = 0;
+      this.timerInterval = setInterval(() => this.timer++, 1000);
+      this.en.text = this.en.stableText;
     },
     restartTrain() {
+      clearInterval(this.timerInterval);
+      this.timer = 0;
+      this.timerInterval = setInterval(() => this.timer++, 1000);
       this.en.text = this.en.stableText;
     },
     stopTrain() {
@@ -157,16 +163,9 @@ export default {
       this.buttons.start = !this.buttons.start;
       this.buttons.restart = !this.buttons.restart;
       this.buttons.stop = !this.buttons.stop;
-      this.en.text = this.en.stableText;
       this.$el.getElementsByClassName('typer__keyboard')[0].classList.remove('animate__fadeInLeft');
       this.$el.getElementsByClassName('typer__keyboard')[0].classList.add('animate__fadeOutLeft');
-      this.timerOff();
-    },
-    timerOn() {
-      setInterval(() => this.timer++, 1000);
-    },
-    timerOff() {
-      clearInterval(this.timerOn());
+      clearInterval(this.timerInterval);
     },
     pressedKey(e) {
       if (e.key === 'Shift' && e.repeat === false) {
@@ -217,11 +216,16 @@ export default {
     restText() {
       return this.en.text.slice(1);
     },
+    speed() {
+      const CHAR_PER_SECOND = (this.en.stableText.length - this.en.text.length) / this.timer;
+      return Math.floor(CHAR_PER_SECOND * 60);
+    },
     progress() {
       const PERCENT = this.en.stableText.length / 100;
       if(this.en.text.length) {
         return Math.floor(((this.en.stableText.length - this.en.text.length) / PERCENT));
       } else {
+        this.stopTrain();
         return 100;
       }
     }
@@ -245,7 +249,7 @@ export default {
       min-height: 300px;
       white-space: pre-wrap;
       position: relative;
-      & span {
+      & > span {
         color: #fff;
         background: grey;
       }
