@@ -2,11 +2,28 @@
   <v-app>
     <v-main>
       <div class='typer d-flex flex-column align-center'>
+        <div class="typer__version">
+          <v-btn-toggle
+          mandatory
+          v-model='version'
+          >
+            <v-btn
+             :disabled='version === 0'
+             @click='stopTrain'
+             x-large
+             >EN</v-btn>
+            <v-btn
+            :disabled='version === 1'
+            @click='stopTrain'
+            x-large
+            >RU</v-btn>
+          </v-btn-toggle>
+        </div>
         <div class="typer__title text-h1 animate__animated animate__fadeInLeftBig">
-          Welcome to the Typer
+          {{ this.content.title }}
         </div>
         <div class="typer__subtitle text-h2 animate__animated animate__fadeInRightBig animate__delay-1s">
-          Show your speed!
+          {{ this.content.subtitle }}
         </div>
         <div class="typer__text animate__animated animate__fadeIn animate__delay-2s animate__slow">
           <span>{{nextLetter}}</span>{{restText}}
@@ -18,7 +35,7 @@
         <div class='typer__progress'>
           <v-progress-linear
             class='animate__animated animate__fadeIn animate__delay-2s animate__slow'
-            v-model='progress'
+            :value='progress'
             color="blue-grey"
             height="25"
           >
@@ -39,8 +56,8 @@
               <Key ref='keys' :uppercase='uppercase' v-for='(key, i) in thirdLineKeys' :key='23 + i' :somekey='key'/>
             </div>
           </div>
-          <div class="d-flex flex-column justify-space-between">
-            <div class="typer__buttons animate__animated animate__fadeIn animate__delay-2s animate__slow">
+          <div class="d-flex flex-column justify-space-between animate__animated animate__fadeIn animate__delay-2s animate__slow">
+            <div class="typer__buttons">
               <v-btn
                 @click='startTrain'
                 large
@@ -68,7 +85,7 @@
               </v-btn>
             </div>
             <div class="typer__timer">
-              Time:<br>{{timer}}
+              {{this.content.timer}}:<br>{{timer}}
             </div>
           </div>
         </div>
@@ -87,6 +104,7 @@ export default {
     Key
   },
   data: () => ({
+    version: 0,
     uppercase: false,
     keyboard: false,
     buttons: {
@@ -99,7 +117,52 @@ export default {
     trainInfo: {
       mistakes: 0
     },
+    ru: {
+      title: 'Добро пожаловать в Typer',
+      subtitle: 'Покажи свою скорость!',
+      stableText: 'Разнообразный и богатый опыт сложившаяся структура организации требуют от нас анализа систем массового участия. Значимость этих проблем настолько очевидна, что начало повседневной работы по формированию позиции требуют определения и уточнения новых предложений. Задача организации, в особенности же новая модель организационной деятельности влечет за собой процесс внедрения и модернизации дальнейших направлений развития.',
+      text: 'Разнообразный и богатый опыт сложившаяся структура организации требуют от нас анализа систем массового участия. Значимость этих проблем настолько очевидна, что начало повседневной работы по формированию позиции требуют определения и уточнения новых предложений. Задача организации, в особенности же новая модель организационной деятельности влечет за собой процесс внедрения и модернизации дальнейших направлений развития.',
+      keys: [
+        { lowText: 'й', upText: 'Й' },
+        { lowText: 'ц', upText: 'Ц' },
+        { lowText: 'у', upText: 'У' },
+        { lowText: 'к', upText: 'К' },
+        { lowText: 'е', upText: 'Е' },
+        { lowText: 'н', upText: 'Н' },
+        { lowText: 'г', upText: 'Г' },
+        { lowText: 'ш', upText: 'Ш' },
+        { lowText: 'щ', upText: 'Щ' },
+        { lowText: 'з', upText: 'З' },
+        { lowText: 'х', upText: 'Х' },
+        { lowText: 'ъ', upText: 'Ъ' },
+        { lowText: 'ф', upText: 'Ф' },
+        { lowText: 'ы', upText: 'Ы' },
+        { lowText: 'в', upText: 'В' },
+        { lowText: 'а', upText: 'А' },
+        { lowText: 'п', upText: 'П' },
+        { lowText: 'р', upText: 'Р' },
+        { lowText: 'о', upText: 'О' },
+        { lowText: 'л', upText: 'Л' },
+        { lowText: 'д', upText: 'Д' },
+        { lowText: 'ж', upText: 'Ж' },
+        { lowText: 'э', upText: 'Э' },
+        { lowText: 'я', upText: 'Я' },
+        { lowText: 'ч', upText: 'Ч' },
+        { lowText: 'с', upText: 'С' },
+        { lowText: 'м', upText: 'М' },
+        { lowText: 'и', upText: 'И' },
+        { lowText: 'т', upText: 'Т' },
+        { lowText: 'ь', upText: 'Ь' },
+        { lowText: 'б', upText: 'Б' },
+        { lowText: 'ю', upText: 'Ю' },
+        { lowText: '.', upText: ',' },
+        { lowText: ' ', upText: ' ', space: true}
+      ],
+      timer: 'Время'
+    },
     en: {
+      title: 'Welcome to the Typer',
+      subtitle: 'Show your speed!',
       stableText: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
       text: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
       keys: [
@@ -137,34 +200,37 @@ export default {
         { lowText: '.', upText: '>'},
         { lowText: '/', upText: '?'},
         { lowText: ' ', upText: ' ', space: true}
-      ]
+      ],
+      timer: 'Time'
     }
   }),
   methods: {
     startTrain() {
       document.addEventListener('keydown', this.pressedKey);
-      this.buttons.start = !this.buttons.start;
-      this.buttons.restart = !this.buttons.restart;
-      this.buttons.stop = !this.buttons.stop;
+      this.buttons.start = false;
+      this.buttons.restart = true;
+      this.buttons.stop = true;
       this.$el.getElementsByClassName('typer__keyboard')[0].classList.remove('animate__fadeOutLeft');
       this.$el.getElementsByClassName('typer__keyboard')[0].classList.add('animate__fadeInLeft');
       this.timer = 0;
       this.timerInterval = setInterval(() => this.timer++, 1000);
-      this.en.text = this.en.stableText;
+      this.content.text = this.content.stableText;
     },
     restartTrain() {
       clearInterval(this.timerInterval);
       this.timer = 0;
       this.timerInterval = setInterval(() => this.timer++, 1000);
-      this.en.text = this.en.stableText;
+      this.content.text = this.content.stableText;
     },
     stopTrain() {
       document.removeEventListener('keydown', this.pressedKey);
-      this.buttons.start = !this.buttons.start;
-      this.buttons.restart = !this.buttons.restart;
-      this.buttons.stop = !this.buttons.stop;
-      this.$el.getElementsByClassName('typer__keyboard')[0].classList.remove('animate__fadeInLeft');
-      this.$el.getElementsByClassName('typer__keyboard')[0].classList.add('animate__fadeOutLeft');
+      this.buttons.start = true;
+      this.buttons.restart = false;
+      this.buttons.stop = false;
+      if(this.$el.getElementsByClassName('typer__keyboard')[0].classList.contains('animate__fadeInLeft')) {
+        this.$el.getElementsByClassName('typer__keyboard')[0].classList.remove('animate__fadeInLeft');
+        this.$el.getElementsByClassName('typer__keyboard')[0].classList.add('animate__fadeOutLeft');
+      }
       clearInterval(this.timerInterval);
     },
     pressedKey(e) {
@@ -175,7 +241,7 @@ export default {
       if (e.key === 'CapsLock') {
         this.uppercase = !this.uppercase;
       }
-      for (let i = 0; i < this.en.keys.length; i++) {
+      for (let i = 0; i < this.content.keys.length; i++) {
         if(this.$refs.keys[i].somekey.lowText === e.key.toLowerCase()) {
           if(e.key === this.nextLetter) {
             this.$refs.keys[i].$el.classList.add('key_correct');
@@ -191,7 +257,7 @@ export default {
       }
     },
     changeText() {
-      this.en.text = this.en.text.slice(1);
+      this.content.text = this.content.text.slice(1);
     },
     changeCase(e) {
       if (e.key === 'Shift') {
@@ -202,31 +268,38 @@ export default {
   },
   computed: {
     firstLineKeys() {
-      return this.en.keys.slice(0, 12);
+      return this.content.keys.slice(0, 12);
     },
     secondLineKeys() {
-      return this.en.keys.slice(12, 23);
+      return this.content.keys.slice(12, 23);
     },
     thirdLineKeys() {
-      return this.en.keys.slice(23, 34);
+      return this.content.keys.slice(23, 34);
     },
     nextLetter() {
-      return this.en.text.slice(0, 1);
+      return this.content.text.slice(0, 1);
     },
     restText() {
-      return this.en.text.slice(1);
+      return this.content.text.slice(1);
     },
     speed() {
-      const CHAR_PER_SECOND = (this.en.stableText.length - this.en.text.length) / this.timer;
+      const CHAR_PER_SECOND = (this.content.stableText.length - this.content.text.length) / this.timer;
       return Math.floor(CHAR_PER_SECOND * 60);
     },
     progress() {
-      const PERCENT = this.en.stableText.length / 100;
-      if(this.en.text.length) {
-        return Math.floor(((this.en.stableText.length - this.en.text.length) / PERCENT));
+      const PERCENT = this.content.stableText.length / 100;
+      if(this.content.text.length) {
+        return Math.floor(((this.content.stableText.length - this.content.text.length) / PERCENT));
       } else {
         this.stopTrain();
         return 100;
+      }
+    },
+    content() {
+      if(this.version === 0) {
+        return this.en;
+      } else {
+        return this.ru;
       }
     }
   }
@@ -272,6 +345,11 @@ export default {
       & button:not(:last-child) {
         margin-right: 20px;
       }
+    }
+    &__version {
+      position: absolute;
+      top: 15px;
+      right: 15px;
     }
     &__keyboard {
       opacity: 0;
