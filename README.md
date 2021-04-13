@@ -1,8 +1,6 @@
 # typer
 ## Активная ссылка
-```
 https://sam-gold311.github.io/typer/dist
-```
 ## Project setup
 ```
 npm install
